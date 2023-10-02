@@ -26,7 +26,7 @@ export class App extends Component {
         });
 
         const { totalHits, hits } = await fetchImages(query, page);
-    
+
         if (totalHits === 0) {
           Notify.failure('Nothing was found for your request');
           this.setState({
