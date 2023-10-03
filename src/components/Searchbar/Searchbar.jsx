@@ -16,7 +16,7 @@ export class Searchbar extends Component {
 
         if (query.trim() === '') {
             Notify.info('Please enter some value to search');
-            return;
+            
         }
 
         onSubmit(query);

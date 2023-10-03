@@ -38,6 +38,13 @@ export class App extends Component {
           return;
         }
 
+        if (query === '') {
+          this.setState({
+            isLoading: false,
+            loadMore: false
+          });
+          return;
+        }
 
         this.setState(prevState => ({
           images: page === 1
