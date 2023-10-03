@@ -56,7 +56,9 @@ export class App extends Component {
   }
 
   onSubmit = (query) => {
-    this.setState({ query, page: 1 });
+    this.setState({ 
+      query, 
+      page: 1 });
   }
 
   handleLoadMore = () => {
@@ -73,7 +75,7 @@ export class App extends Component {
     return (
       <>
         <Searchbar onSubmit={this.onSubmit} />
-        {images && <ImageGallery images={images} />}
+        {images.length !== 0 && <ImageGallery images={images} />}
         {!!totalHits && <Button onLoadMore={this.handleLoadMore} />}
         {isLoading && <Loader />}
       </>
