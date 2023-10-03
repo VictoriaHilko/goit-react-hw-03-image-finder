@@ -14,6 +14,7 @@ export class App extends Component {
     page: 1,
     totalHits: 0,
     isLoading: false,
+    loadMore: false
   };
 
   async componentDidUpdate(_, prevState) {
@@ -22,7 +23,8 @@ export class App extends Component {
     if (prevState.query !== query || prevState.page !== page) {
       try {
         this.setState({
-          isLoading: true
+          isLoading: true,
+          loadMore: false
         });
 
         const { totalHits, hits } = await fetchImages(query, page);
@@ -30,10 +32,12 @@ export class App extends Component {
         if (totalHits === 0) {
           Notify.failure('Nothing was found for your request');
           this.setState({
-            isLoading: false
+            isLoading: false,
+            loadMore: false
           });
           return;
         }
+
 
         this.setState(prevState => ({
           images: page === 1
@@ -43,6 +47,8 @@ export class App extends Component {
           totalHits: page === 1
             ? totalHits - hits.length
             : totalHits - [...prevState.images, ...hits].length,
+
+          loadMore: true
         }));
 
         this.setState({
@@ -56,27 +62,37 @@ export class App extends Component {
   }
 
   onSubmit = (query) => {
+
+    if (this.state.query === query) 
+    return;
+
     this.setState({ 
       query, 
-      page: 1 });
+      page: 1,
+      images: []
+    });
+
   }
 
   handleLoadMore = () => {
     this.setState(prevState => (
       {
-        page: prevState.page + 1
+        isLoading: true,
+        images: [...this.state.images],
+        page: prevState.page + 1,
+        loadMore: false
       }));
   };
 
   render() {
 
-    const { images, totalHits, isLoading } = this.state;
+    const { images, isLoading, loadMore } = this.state;
 
     return (
       <>
         <Searchbar onSubmit={this.onSubmit} />
         {images.length !== 0 && <ImageGallery images={images} />}
-        {!!totalHits && <Button onLoadMore={this.handleLoadMore} />}
+        {loadMore && <Button onLoadMore={this.handleLoadMore} />}
         {isLoading && <Loader />}
       </>
     );
